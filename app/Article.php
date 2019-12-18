@@ -11,7 +11,7 @@ class Article extends Model
 	static $rules = [
 		'title' => 'required|string|max:20',
 		'content' => 'required|string|max:800',
-		'category' => 'required|string',
+		'category' => 'required|string|max:30',
 		'image' => 'file|image|mimes:jpeg,png,jpg,gif|max:10240'
 	];
 	
@@ -24,6 +24,7 @@ class Article extends Model
 		'content.max' => '記事は800文字以内にしてください',
 		'category.required' => 'カテゴリを入力してください',
 		'category.string' => '不正な値です',
+		'category.max' => 'カテゴリ名が長すぎます',
 		'image.file' => '画像のアップロードに失敗しました',
 		'image.image' => '画像ファイルではありません',
 		'image.mimes' => 'jpeg,png,jpg,gifのみ指定できます',
