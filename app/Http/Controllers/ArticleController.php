@@ -1,10 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\ValidateArticle;
 use App\Article;
 use App\User;
 use App\Category;
@@ -80,14 +83,11 @@ class ArticleController extends Controller
 		return view('article.create');
 	}
 	
-	public function store(Request $request)
-	{	
-		$request->validate(Article::$rules,Article::$messages);
-		$cat_names = mb_convert_kana($request->category,'s');
-		$categoryArray = array_unique(preg_split('/[\s]+/',$cat_names,-1,PREG_SPLIT_NO_EMPTY));
-		$request['category'] = $categoryArray;
-		$request->validate(['category' => 'max:5'],['category.max' => '登録できるカテゴリは最大5つまでです']);
-
+	public function store(ValidateArticle $request)
+	{
+		$categories = mb_convert_kana($request->category,'s');
+                $categories_in_array = array_unique(preg_split('/[\s]+/',$categories,-1,PREG_SPLIT_NO_EMPTY));	
+		
 		$article = new Article();
 		$article->fill($request->all());
 		$article->user()->associate(Auth::id());
@@ -96,10 +96,9 @@ class ArticleController extends Controller
 		}
 		$article->save();
 
-		foreach($categoryArray as $cat_name){
-			$category = new Category();
+		foreach($categories_in_array as $one_category){
 			//無いなら新しくカテゴリ名を登録
-			$category = $category::firstOrCreate(['name' => $cat_name]);
+			$category = Category::firstOrCreate(['name' => $one_category]);
 			$article->categories()->attach($category->id);
 		}
 		return redirect()->route('article.show',['id' => $article->id]);

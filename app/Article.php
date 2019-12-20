@@ -6,30 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Article extends Model
 {
-    protected $fillable = ['title','content'];
-	
-	static $rules = [
-		'title' => 'required|string|max:20',
-		'content' => 'required|string|max:800',
-		'category' => 'required|string|max:30',
-		'image' => 'file|image|mimes:jpeg,png,jpg,gif|max:10240'
-	];
-	
-	static $messages = [
-		'title.required' => 'タイトルを入力してください',
-		'title.string' => '不正な値です',
-		'title.max' => 'タイトルは20文字以内にしてください',
-		'content.required' => '記事を入力してください',
-		'content.string' => '不正な値です',
-		'content.max' => '記事は800文字以内にしてください',
-		'category.required' => 'カテゴリを入力してください',
-		'category.string' => '不正な値です',
-		'category.max' => 'カテゴリ名が長すぎます',
-		'image.file' => '画像のアップロードに失敗しました',
-		'image.image' => '画像ファイルではありません',
-		'image.mimes' => 'jpeg,png,jpg,gifのみ指定できます',
-		'image.max' => '画像ファイルは１０Ｍまでです',
-	];
+	protected $fillable = ['title','content'];
 	
 	public function user()
 	{

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\ValidateProfile;
 use App\User;
 
 class ProfileController extends Controller
@@ -58,25 +59,8 @@ class ProfileController extends Controller
 		return view('profile.edit',['user'=>$user]);
 	}
 	
-	public function update(Request $request)
+	public function update(ValidateProfile $request)
 	{
-		$validate_rules = [
-			'name' => 'required|string|max:15',
-			'self_int' => '|max:200',
-			'image' => 'file|image|mimes:jpeg,png,jpg,gif|max:10240'
-		];
-		
-		$validate_messages = [
-			'name.required' => '名前を入力してください',
-			'name.max' => '名前は15字以内にしてください',
-			'self_int.max' => '自己紹介は200字以内にしてください',
-			'self_int.string' => '不正な値です',
-			'image.file' => '画像のアップロードに失敗しました',
-			'image.image' => '画像ファイルではありません',
-			'image.mimes' => 'jpeg,png,jpg,gifのみ指定できます',
-			'image.max' => '画像ファイルは１０Ｍまでです',
-		];
-		$this->validate($request,$validate_rules,$validate_messages);
 		$user = Auth::user();
 		$user->name = $request->name;
 		$user->self_int = $request->self_int;
