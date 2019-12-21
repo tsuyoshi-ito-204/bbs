@@ -124,15 +124,12 @@ class ArticleController extends Controller
 		return view('article.edit',$params);
 	}
 	
-	public function update($id,Request $request)
+	public function update($id,ValidateArticle $request)
 	{
-		$request->validate(Article::$rules,Article::$messages);
 		
-		$cat_names = mb_convert_kana($request->category,'s');
-		$categoryArray = array_unique(preg_split('/[\s]+/',$cat_names,-1,PREG_SPLIT_NO_EMPTY));
-		$request['category'] = $categoryArray;
-		$request->validate(['category' => 'max:5'],['category.max' => '登録できるカテゴリは最大5つまでです']);
-		
+		$categories = mb_convert_kana($request->category,'s');
+		$categories_in_array = array_unique(preg_split('/[\s]+/',$categories,-1,PREG_SPLIT_NO_EMPTY));	
+
 		$article = Article::find($id);
 		$article->fill($request->all());
 		$article->user()->associate(Auth::user());
@@ -145,9 +142,8 @@ class ArticleController extends Controller
 		$article->save();
 	
 		$article->categories()->detach();
-		foreach($categoryArray as $cat_name){
-			$category = new Category();
-			$category = $category::firstOrCreate(['name' => $cat_name]);
+		foreach($categories_in_array as $one_category){
+			$category = Category::firstOrCreate(['name' => $one_category]);
 			$article->categories()->attach($category->id);
 		}
 
